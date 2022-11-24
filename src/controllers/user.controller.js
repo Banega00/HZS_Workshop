@@ -1,5 +1,6 @@
 import { User } from "../models/User.model.js";
-import crypto from 'crypto';
+import { encodeJWT } from '../utils/jwt.js'
+import { hash } from '../utils/util-functions.js'
 export default class UserController{
 
     constructor(){
@@ -14,6 +15,8 @@ export default class UserController{
         let password = body.password;
         let name = body.name;
 
+        if(!username || !password || !name) return response.status(400).json({message: 'Required properties missing for register (name, username, password)'})
+
         
         const existingUser = await User.findOne({username});
         
@@ -24,24 +27,43 @@ export default class UserController{
             return;
         }
         
-        password = crypto.createHash('sha256').update(password).digest('hex');
+        password = hash(password)
 
         const user = new User({username, password, name});
 
         await user.save();
 
-        console.log(`User ${username} already exists`)
-        response.status(200).send();
+        console.log(`User ${username} successfully registered`);
+
+        const token = encodeJWT({name: user.name, username: user.username});
+
+        response.cookie('token', token);
+
+        response.status(200).json({token});
     }
 
-    loginUser = function(request, response, next){
-
+    loginUser = async function(request, response, next){
         const body = request.body;
 
-        console.log("Zahtev za registracijom je stigao")
-        console.log(body)
+        let username = body.username;
+        let password = body.password;
 
-        response.status(200).send();
+        if(!username || !password) return response.status(400).json({message: 'Required properties missing for login (username, password)'})
 
+        const user = await User.findOne({username});
+
+        if(!user) return response.status(400).json({message: `User with username ${username} does not exists!`})
+
+        const hashedPassword = hash(password);
+
+        if(user.password != hashedPassword) return response.status(400).json({message: `Invalid password for user: ${username}`})
+    
+        console.log(`User ${username} successfully logged in`);
+
+        const token = encodeJWT({name: user.name, username: user.username});
+
+        response.cookie('token', token);
+
+        response.status(200).json({token});
     }
 }

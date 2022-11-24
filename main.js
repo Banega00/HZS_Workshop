@@ -1,6 +1,8 @@
 import express from 'express';
-import { userRouter } from "./src/routes/user.router.js";
 import mongoose from 'mongoose'
+import { userRouter } from "./src/routes/user.router.js";
+import { mainRouter } from './src/routes/main.router.js';
+import { authorizeUser } from './src/utils/jwt.js';
 
 
 
@@ -10,16 +12,9 @@ async function main(){
     const connection = await mongoose.connect('mongodb://localhost:27017/hzs');
 
     app.use(express.json())
-
-
-    app.post('/test', function (request, response, next){
-    
-        console.log(request.body)
-    
-        response.status(200).send();
-    })
     
     app.use('/user', userRouter)
+    app.use('/', mainRouter)
     
     const PORT = 3000;
     
