@@ -1,4 +1,5 @@
 import { User } from "../models/User.model.js";
+import crypto from 'crypto';
 export default class UserController{
 
     constructor(){
@@ -9,20 +10,23 @@ export default class UserController{
 
         const body = request.body;
 
-        const username = body.username;
-        const password = body.password;
-        const name = body.name;
+        let username = body.username;
+        let password = body.password;
+        let name = body.name;
 
-        const user = new User({username, password, name});
-
+        
         const existingUser = await User.findOne({username});
-
+        
         if(existingUser){
             console.log(existingUser)
             console.log("User already exists");
             response.status(400).send();
             return;
         }
+        
+        password = crypto.createHash('sha256').update(password).digest('hex');
+
+        const user = new User({username, password, name});
 
         await user.save();
 
