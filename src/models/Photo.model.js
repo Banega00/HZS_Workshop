@@ -5,7 +5,7 @@ export const photoSchema = new mongoose.Schema({
     filename: String,
     user: {
         type: Schema.Types.ObjectId,
-        ref: "Photo"
+        ref: "User"
     }
 });
 
