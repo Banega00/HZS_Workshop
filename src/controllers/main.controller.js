@@ -49,20 +49,14 @@ export class MainController{
 
     deletePhoto = async function(request, response, next){
         try{
-            const user = response.locals.user;
             const id = request.params.id;
     
             if(!id) return response.status(400).send({message: 'Missing photo id'})
     
-            const photo = await Photo.findById(id).populate('user')
+            const photo = await Photo.findById(id)
 
             if(!photo) return response.status(404).send({message: 'Photo not found'})
-
     
-            if(photo.user.username != user.username) return response.status(403).send({message: 'You are not allowed to delete other user photo'})
-            
-            await photo.user.photos.remove(photo.id);
-            await photo.user.save();
             await Photo.deleteOne(photo);
 
             response.status(200).json({message:'photo successfully delted'});
