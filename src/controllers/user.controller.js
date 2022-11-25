@@ -29,13 +29,11 @@ export default class UserController{
         
         password = hash(password)
 
-        const user = new User({username, password, name});
-
-        await user.save();
+        const user = await User.create({username, password, name});
 
         console.log(`User ${username} successfully registered`);
 
-        const token = encodeJWT({name: user.name, username: user.username});
+        const token = encodeJWT({name: user.name, username: user.username, id: user.id});
 
         response.cookie('token', token);
 
@@ -53,14 +51,14 @@ export default class UserController{
         const user = await User.findOne({username});
 
         if(!user) return response.status(400).json({message: `User with username ${username} does not exists!`})
-
+        
         const hashedPassword = hash(password);
 
         if(user.password != hashedPassword) return response.status(400).json({message: `Invalid password for user: ${username}`})
     
         console.log(`User ${username} successfully logged in`);
 
-        const token = encodeJWT({name: user.name, username: user.username});
+        const token = encodeJWT({name: user.name, username: user.username, id: user.id});
 
         response.cookie('token', token);
 

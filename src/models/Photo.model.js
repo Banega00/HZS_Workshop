@@ -1,10 +1,12 @@
-import mongoose from 'mongoose'
+import mongoose, { Schema } from 'mongoose'
 
-const photoSchema = new mongoose.Schema({
-    username: { type: String, unique: true},
-    password: String,
-    name: String,
-    
+export const photoSchema = new mongoose.Schema({
+    title: String,
+    filename: String,
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: "Photo"
+    }
 });
 
 export const Photo = mongoose.model('photo', photoSchema);
