@@ -23,13 +23,17 @@ export class MainController{
             const mongoUser = await User.findById(user.id);
     
             if(!mongoUser) return response.status(401).json({message: 'Unknown user'})
-    
+            
+            
             const photo = await Photo.create({
                 title: body.title, user: mongoUser, 
                 filename: file.filename, 
                 path:`/public/photos/${file.filename}`})
+                
+            mongoUser.photos.push(photo);
+            await mongoUser.save();
     
-            response.status(200).json(photo);
+            response.status(200).json();
         }catch(error){
             console.log(error)
             return response.status(401).json({message: 'Error adding the photo'})
@@ -62,11 +66,16 @@ export class MainController{
             if(!id) return response.status(400).send({message: 'Missing photo id'})
     
             const photo = await Photo.findById(id).populate('user')
+
+            if(!photo) return response.status(404).send({message: 'Photo not found'})
+
     
             if(photo.user.username != user.username) return response.status(403).send({message: 'You are not allowed to delete other user photo'})
             
-            await photo.delete();
-    
+            await photo.user.photos.remove(photo.id);
+            await photo.user.save();
+            await Photo.deleteOne(photo);
+
             response.status(200).json({message:'photo successfully delted'});
         }catch(error){
             console.log(error);

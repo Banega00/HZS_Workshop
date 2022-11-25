@@ -64,4 +64,17 @@ export default class UserController{
 
         response.status(200).json({token});
     }
+
+    getUserPhotos = async function(request, response){
+        try{
+            const username = request.params.username;
+    
+            const user = await User.findOne({username: username}, '-password').populate('photos')
+    
+            return response.status(200).json(user); 
+        }catch(error){
+            console.log(error);
+            return response.status(500).json({message:'Error getting user photos'})
+        }
+    }
 }
