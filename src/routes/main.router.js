@@ -40,7 +40,7 @@ router.get('/test', mainController.test)
 router.post('/photo', mainController.addPhoto)
 router.get('/photo/:id', mainController.getPhoto)
 router.get('/photos', mainController.getAllPhotos)
-router.delete('/photo/:id', authorizeUser, mainController.deletePhoto)
+router.delete('/photo/:id', mainController.deletePhoto)
 
 
 router.get('/test', mainController.test)
