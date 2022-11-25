@@ -14,9 +14,8 @@ async function main(){
 
     app.use(express.json())
 
-    // const __filename = fileURLToPath(import.meta.url);
-    // const __dirname = path.dirname(__filename);
-
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+    app.use('/public', express.static(__dirname + '/public'));
     
     app.use('/user', userRouter)
     app.use('/', mainRouter)
