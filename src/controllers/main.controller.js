@@ -12,34 +12,16 @@ export class MainController{
             const body = request.body;
             const file = request.file;
     
-            const user = response.locals.user;
+            const {title, filename, description, hashtags, location, createdAt} = body
     
-            if(!user) return response.status(401).json({message: 'Unknown user'})
-
-            const {title, description, hashtags, location, createdAt} = body
-    
-            if(!title || !hashtags || !location) return response.status(400).json({message: 'Invalid body'}) 
-    
-            if(!file) return response.status(400).json({message: 'File is missing from request'}) 
-    
-            const mongoUser = await User.findById(user.id);
-    
-            if(!mongoUser) return response.status(401).json({message: 'Unknown user'})
-            
-            
             const photo = await Photo.create({
-                title: body.title, 
+                title: title, 
                 description: description ?? '',
                 hashtags,
                 location,
-                createdAt: createdAt,
-                user: mongoUser, 
-                filename: file.filename, 
-                path:`/public/photos/${file.filename}`})
-                
-            mongoUser.photos.push(photo);
-            await mongoUser.save();
-    
+                createdAt,
+                filename: filename})
+
             response.status(200).json();
         }catch(error){
             console.log(error)

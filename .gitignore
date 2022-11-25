@@ -1,2 +1,2 @@
 node_modules
-public/photos
+public/photosrouter.post('/login', userController.loginUser)

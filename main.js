@@ -10,7 +10,8 @@ import {fileURLToPath} from 'url';
 async function main(){
     const app = express();
 
-    const connection = await mongoose.connect('mongodb://localhost:27019/hzs');
+    // const connection = await mongoose.connect('mongodb://localhost:27019/hzs');
+    const connection = await mongoose.connect('mongodb+srv://hzs:1234@cluster0.kniixfs.mongodb.net/?retryWrites=true&w=majority');
 
     app.use(express.json())
 
