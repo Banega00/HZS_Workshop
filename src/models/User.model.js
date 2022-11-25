@@ -4,7 +4,11 @@ import { photoSchema } from '../models/Photo.model.js';
 const userSchema = new mongoose.Schema({
     username: { type: String, unique: true},
     password: String,
-    name: String,
+    firstName: String,
+    lastName: String,
+    phoneNumber: String,
+    email: String,
+    description: String,
     photos: [{
         type: Schema.Types.ObjectId,
         ref: "Photo"
