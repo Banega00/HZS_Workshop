@@ -4,12 +4,13 @@ import { userRouter } from "./src/routes/user.router.js";
 import { mainRouter } from './src/routes/main.router.js';
 import path from 'path'
 import {fileURLToPath} from 'url';
-
+import cors from 'cors';
 
 
 async function main(){
     const app = express();
 
+    app.use(cors());
     // const connection = await mongoose.connect('mongodb://localhost:27019/hzs');
     const connection = await mongoose.connect('mongodb+srv://hzs:1234@cluster0.kniixfs.mongodb.net/?retryWrites=true&w=majority');
 

@@ -25,7 +25,7 @@ export class MainController{
             response.status(200).json();
         }catch(error){
             console.log(error)
-            return response.status(401).json({message: 'Error adding the photo'})
+            return response.status(400).json({message: 'Error adding the photo'})
         }
     }
 
